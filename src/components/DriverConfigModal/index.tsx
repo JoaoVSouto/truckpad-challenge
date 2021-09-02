@@ -1,4 +1,4 @@
-import { Modal, Steps, Input, Row, Col } from 'antd';
+import { Modal, Steps, Input, Form } from 'antd';
 import locale from 'antd/es/date-picker/locale/pt_BR';
 
 import * as S from './styles';
@@ -21,26 +21,21 @@ export function DriverConfigModal({
         </Steps>
 
         <S.FormContainer>
-          <Input.Group size="large">
-            <Row gutter={8}>
-              <Col span={12}>
-                <S.InputGroup>
-                  <label htmlFor="name-input">Nome completo</label>
-                  <Input id="name-input" />
-                </S.InputGroup>
-              </Col>
-              <Col span={12}>
-                <S.InputGroup>
-                  <label htmlFor="name-input">Data de nascimento</label>
-                  <S.DatePicker
-                    placeholder=""
-                    locale={locale}
-                    format="DD-MM-YYYY"
-                  />
-                </S.InputGroup>
-              </Col>
-            </Row>
-          </Input.Group>
+          <Form layout="vertical" requiredMark>
+            <S.NameBirthdaySpace>
+              <Form.Item label="Nome completo" required>
+                <Input />
+              </Form.Item>
+              <Form.Item label="Data de nascimento" required>
+                <S.DatePicker
+                  id="birthday-input"
+                  placeholder=""
+                  locale={locale}
+                  format="DD-MM-YYYY"
+                />
+              </Form.Item>
+            </S.NameBirthdaySpace>
+          </Form>
         </S.FormContainer>
       </S.Container>
     </Modal>
