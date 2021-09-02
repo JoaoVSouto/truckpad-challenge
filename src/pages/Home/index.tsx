@@ -1,5 +1,5 @@
-import { Table, Space, Button, Tooltip, Popconfirm } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, Space, Button, Tooltip, Popconfirm, Typography } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
 
 import * as S from './styles';
@@ -73,6 +73,15 @@ const data = [
 export function Home() {
   return (
     <S.Container>
+      <S.Header>
+        <Typography.Title level={2}>
+          Gerenciamento de motoristas
+        </Typography.Title>
+
+        <Button type="primary" icon={<PlusOutlined />}>
+          Novo motorista
+        </Button>
+      </S.Header>
       <Table
         columns={columns}
         dataSource={data}
