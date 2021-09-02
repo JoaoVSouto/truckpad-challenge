@@ -4,6 +4,7 @@ export default {
   },
 
   gray: {
+    300: '#fefefe',
     800: '#2d2d2d',
   },
 };

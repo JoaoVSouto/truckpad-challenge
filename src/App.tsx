@@ -1,12 +1,14 @@
-import { PageHeader, Button } from 'antd';
+import { ThemeProvider } from 'styled-components';
 
-function App() {
+import GlobalStyles from 'styles/global';
+import light from 'styles/themes/light';
+
+export default function App() {
   return (
-    <>
-      <PageHeader title="Truckpad" />
-      <Button type="primary">paz de Deus</Button>
-    </>
+    <ThemeProvider theme={light}>
+      <h1>hello world</h1>
+
+      <GlobalStyles />
+    </ThemeProvider>
   );
 }
-
-export default App;
