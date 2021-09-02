@@ -1,6 +1,9 @@
+import * as React from 'react';
 import { Table, Space, Button, Tooltip, Popconfirm, Typography } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
+
+import { DriverConfigModal } from 'components/DriverConfigModal';
 
 import * as S from './styles';
 
@@ -62,6 +65,7 @@ const columns = [
 
 const data = [
   {
+    key: 1,
     name: 'Pouca Tripa',
     age: 32,
     state: 'São Paulo',
@@ -71,6 +75,17 @@ const data = [
 ];
 
 export function Home() {
+  const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
+    React.useState(false);
+
+  function handleDriverConfigModalOpen() {
+    setIsDriverConfigModalVisible(true);
+  }
+
+  function handleDriverConfigModalClose() {
+    setIsDriverConfigModalVisible(false);
+  }
+
   return (
     <S.Container>
       <S.Header>
@@ -78,7 +93,11 @@ export function Home() {
           Gerenciamento de motoristas
         </Typography.Title>
 
-        <Button type="primary" icon={<PlusOutlined />}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleDriverConfigModalOpen}
+        >
           Novo motorista
         </Button>
       </S.Header>
@@ -90,6 +109,11 @@ export function Home() {
           hideOnSinglePage: true,
           showSizeChanger: false,
         }}
+      />
+
+      <DriverConfigModal
+        visible={isDriverConfigModalVisible}
+        onRequestClose={handleDriverConfigModalClose}
       />
     </S.Container>
   );
