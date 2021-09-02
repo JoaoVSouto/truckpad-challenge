@@ -1,13 +1,12 @@
+import logoImg from 'assets/img/truckpad-logo-negativo.svg';
+
 import * as S from './styles';
 
 export function Header() {
   return (
     <S.Header>
       <S.Container>
-        <img
-          src="https://www.truckpad.com.br/uploads/2020/02/646db7f2-truckpad-logo-negativo.svg"
-          alt="Truckpad"
-        />
+        <img src={logoImg} alt="Truckpad" />
       </S.Container>
     </S.Header>
   );
