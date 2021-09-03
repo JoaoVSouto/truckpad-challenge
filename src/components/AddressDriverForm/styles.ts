@@ -1,11 +1,7 @@
 import styled from 'styled-components';
-import { DatePicker as AntdDatePicker, Space as AntdSpace, Button } from 'antd';
+import { Space as AntdSpace } from 'antd';
 
 import breakpoints from 'styles/breakpoints';
-
-export const DatePicker = styled(AntdDatePicker)`
-  width: 100%;
-`;
 
 export const Space = styled(AntdSpace)`
   width: 100%;
@@ -46,7 +42,20 @@ export const HalvedSpace = styled(Space)`
   `}
 `;
 
-export const NextButton = styled(Button)`
-  margin-left: auto;
-  display: block;
+export const ThirdSpace = styled(Space)`
+  ${breakpoints.greaterThan('sm')`
+    .ant-space-item {
+      flex: 1;
+    }
+
+    .ant-space-item:first-child {
+      flex: 2;
+    }
+  `}
+`;
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;

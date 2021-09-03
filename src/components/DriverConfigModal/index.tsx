@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Modal, Steps } from 'antd';
 
 import { GeneralDriverDataForm } from 'components/GeneralDriverDataForm';
+import { AddressDriverForm } from 'components/AddressDriverForm';
 
 import * as S from './styles';
 
@@ -20,6 +21,10 @@ export function DriverConfigModal({
     setCurrentStep(state => state + 1);
   }
 
+  function handlePreviousPage() {
+    setCurrentStep(state => state - 1);
+  }
+
   function handleModalClose() {
     setCurrentStep(0);
     onRequestClose();
@@ -36,6 +41,9 @@ export function DriverConfigModal({
         <S.FormContainer>
           {currentStep === 0 && (
             <GeneralDriverDataForm onNextPage={handleNextPage} />
+          )}
+          {currentStep === 1 && (
+            <AddressDriverForm onPreviousPage={handlePreviousPage} />
           )}
         </S.FormContainer>
       </S.Container>

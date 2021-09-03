@@ -31,7 +31,7 @@ export function GeneralDriverDataForm({ onNextPage }: GeneralDriverDataForm) {
         <Form.Item label="CPF" required>
           <Input />
         </Form.Item>
-        <Form.Item name="radio-group" label="Registrar CNH?">
+        <Form.Item label="Registrar CNH?">
           <div>
             <Radio onChange={() => setRegisterCNH(true)} checked={registerCNH}>
               Sim
@@ -54,7 +54,7 @@ export function GeneralDriverDataForm({ onNextPage }: GeneralDriverDataForm) {
             </Form.Item>
           </S.Space>
 
-          <S.CategoryValiditySpace>
+          <S.HalvedSpace>
             <Form.Item label="Categoria">
               <Select mode="multiple" allowClear>
                 <Select.Option value="A">A</Select.Option>
@@ -71,7 +71,7 @@ export function GeneralDriverDataForm({ onNextPage }: GeneralDriverDataForm) {
                 format="DD-MM-YYYY"
               />
             </Form.Item>
-          </S.CategoryValiditySpace>
+          </S.HalvedSpace>
         </>
       )}
 
