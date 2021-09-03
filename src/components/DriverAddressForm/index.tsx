@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Input, Form, Radio, Select, Button } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 
+import { BRAZILIAN_STATES } from 'utils/brazilianStates';
+
 import * as S from './styles';
 
 type DriverAddressFormProps = {
@@ -62,9 +64,18 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
 
       <S.HalvedSpace>
         <Form.Item name="state" label="Estado" rules={[requiredRule]}>
-          <Select showSearch notFoundContent="Nenhum estado encontrado">
-            <Select.Option value="jack">Jack</Select.Option>
-            <Select.Option value="lucy">Lucy</Select.Option>
+          <Select
+            showSearch
+            notFoundContent="Nenhum estado encontrado"
+            filterOption={(input, option) =>
+              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {Object.entries(BRAZILIAN_STATES).map(([initials, name]) => (
+              <Select.Option key={initials} value={initials}>
+                {name}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item name="city" label="Município" rules={[requiredRule]}>
