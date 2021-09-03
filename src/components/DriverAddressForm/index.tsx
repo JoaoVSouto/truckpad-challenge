@@ -26,11 +26,23 @@ type IBGECityResponse = {
   nome: string;
 };
 
+type StatesInitials = keyof typeof BRAZILIAN_STATES;
+
+type ViaCepResponse = {
+  bairro: string;
+  complemento: string;
+  localidade: string;
+  logradouro: string;
+  uf: StatesInitials;
+};
+
 type AvailableLocals = 'Casa' | 'Trabalho';
 
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
+  const [form] = Form.useForm();
+
   const [local, setLocal] = React.useState<AvailableLocals>('Casa');
   const [cities, setCities] = React.useState<string[]>([]);
   const [isFetchingCities, setIsFetchingCities] = React.useState(false);
@@ -39,9 +51,7 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
     console.log(values);
   }
 
-  async function handleSelectStateChange(
-    stateInitials: keyof typeof BRAZILIAN_STATES,
-  ) {
+  async function fetchStateCities(stateInitials: string) {
     setIsFetchingCities(true);
 
     try {
@@ -55,8 +65,44 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
     }
   }
 
+  function handleSelectStateChange(stateInitials: StatesInitials) {
+    form.setFieldsValue({ city: '' });
+    fetchStateCities(stateInitials);
+  }
+
+  async function handlePostalCodeChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    const postalCode = e.target.value;
+
+    const isValidPostalCode = /^[0-9]{5}-[0-9]{3}$/.test(postalCode);
+
+    if (!isValidPostalCode) {
+      return;
+    }
+
+    const postalCodeResponse = await api.get<ViaCepResponse>(
+      `https://viacep.com.br/ws/${postalCode}/json`,
+    );
+
+    fetchStateCities(postalCodeResponse.data.uf);
+
+    form.setFieldsValue({
+      state: postalCodeResponse.data.uf,
+      city: postalCodeResponse.data.localidade,
+      streetName: postalCodeResponse.data.logradouro,
+      neighborhood: postalCodeResponse.data.bairro,
+      complement: postalCodeResponse.data.complemento,
+    });
+  }
+
   return (
-    <Form layout="vertical" requiredMark onFinish={handleFormSubmit}>
+    <Form
+      layout="vertical"
+      requiredMark
+      form={form}
+      onFinish={handleFormSubmit}
+    >
       <S.Space>
         <Form.Item
           name="postalCode"
@@ -69,7 +115,11 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
             },
           ]}
         >
-          <Input placeholder="99999-999" />
+          <Input
+            placeholder="99999-999"
+            onChange={handlePostalCodeChange}
+            maxLength={9}
+          />
         </Form.Item>
         <Form.Item label="Local">
           <div>
