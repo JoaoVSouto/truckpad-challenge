@@ -5,6 +5,7 @@ import breakpoints from 'styles/breakpoints';
 
 export const Space = styled(AntdSpace)`
   width: 100%;
+  align-items: flex-start;
   flex-direction: column;
   gap: 0 !important;
 
