@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Input, Form, Radio, Select, Button } from 'antd';
-import { LeftOutlined } from '@ant-design/icons';
+import { Input, Form, Radio, Select, Button, Spin } from 'antd';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import { api } from 'services/api';
 
@@ -46,6 +46,7 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
   const [local, setLocal] = React.useState<AvailableLocals>('Casa');
   const [cities, setCities] = React.useState<string[]>([]);
   const [isFetchingCities, setIsFetchingCities] = React.useState(false);
+  const [isFetchingAddress, setIsFetchingAddress] = React.useState(false);
 
   function handleFormSubmit(values: FormData) {
     console.log(values);
@@ -70,6 +71,28 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
     fetchStateCities(stateInitials);
   }
 
+  async function fetchAddress(postalCode: string) {
+    setIsFetchingAddress(true);
+
+    try {
+      const postalCodeResponse = await api.get<ViaCepResponse>(
+        `https://viacep.com.br/ws/${postalCode}/json`,
+      );
+
+      fetchStateCities(postalCodeResponse.data.uf);
+
+      form.setFieldsValue({
+        state: postalCodeResponse.data.uf,
+        city: postalCodeResponse.data.localidade,
+        streetName: postalCodeResponse.data.logradouro,
+        neighborhood: postalCodeResponse.data.bairro,
+        complement: postalCodeResponse.data.complemento,
+      });
+    } finally {
+      setIsFetchingAddress(false);
+    }
+  }
+
   async function handlePostalCodeChange(
     e: React.ChangeEvent<HTMLInputElement>,
   ) {
@@ -81,19 +104,7 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
       return;
     }
 
-    const postalCodeResponse = await api.get<ViaCepResponse>(
-      `https://viacep.com.br/ws/${postalCode}/json`,
-    );
-
-    fetchStateCities(postalCodeResponse.data.uf);
-
-    form.setFieldsValue({
-      state: postalCodeResponse.data.uf,
-      city: postalCodeResponse.data.localidade,
-      streetName: postalCodeResponse.data.logradouro,
-      neighborhood: postalCodeResponse.data.bairro,
-      complement: postalCodeResponse.data.complemento,
-    });
+    fetchAddress(postalCode);
   }
 
   return (
@@ -119,6 +130,10 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
             placeholder="99999-999"
             onChange={handlePostalCodeChange}
             maxLength={9}
+            disabled={isFetchingAddress}
+            suffix={
+              isFetchingAddress && <Spin indicator={<LoadingOutlined />} />
+            }
           />
         </Form.Item>
         <Form.Item label="Local">
