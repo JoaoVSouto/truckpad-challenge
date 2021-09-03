@@ -3,11 +3,22 @@ import { Input, Form, Radio, Select } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { differenceInYears, isFuture } from 'date-fns';
 import locale from 'antd/es/date-picker/locale/pt_BR';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { Moment } from 'moment';
 
 import * as S from './styles';
 
 type DriverGeneralDataFormProps = {
   onNextPage: () => void;
+};
+
+type FormData = {
+  name: string;
+  cpf: string;
+  birthDate: Moment;
+  CNHNumber?: string;
+  CNHExpirationDate?: Moment;
+  CNHCategories?: string[];
 };
 
 const requiredRule = { required: true, message: 'Campo obrigatório' };
@@ -17,7 +28,7 @@ export function DriverGeneralDataForm({
 }: DriverGeneralDataFormProps) {
   const [registerCNH, setRegisterCNH] = React.useState(false);
 
-  function handleFormSubmit(values: any) {
+  function handleFormSubmit(values: FormData) {
     console.log(values);
     onNextPage();
   }
@@ -102,14 +113,13 @@ export function DriverGeneralDataForm({
               rules={[
                 requiredRule,
                 { min: 11, message: 'Mínimo de 11 dígitos' },
-                { max: 15, message: 'Máximo de 15 dígitos' },
                 {
                   pattern: /^\d*$/,
                   message: 'Somente números permitidos',
                 },
               ]}
             >
-              <Input />
+              <Input maxLength={15} />
             </Form.Item>
           </S.Space>
 
@@ -128,7 +138,7 @@ export function DriverGeneralDataForm({
               </Select>
             </Form.Item>
             <Form.Item
-              name="CNHExpireDate"
+              name="CNHExpirationDate"
               label="Validade"
               rules={[requiredRule]}
             >
