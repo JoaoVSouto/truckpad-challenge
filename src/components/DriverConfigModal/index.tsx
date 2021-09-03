@@ -31,7 +31,12 @@ export function DriverConfigModal({
   }
 
   return (
-    <Modal visible={visible} onCancel={handleModalClose} footer={null}>
+    <Modal
+      visible={visible}
+      onCancel={handleModalClose}
+      footer={null}
+      destroyOnClose
+    >
       <S.Container>
         <Steps current={currentStep}>
           <Steps.Step title="Dados gerais" />
