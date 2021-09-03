@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { DatePicker as AntdDatePicker, Space } from 'antd';
+import { DatePicker as AntdDatePicker, Space as AntdSpace, Button } from 'antd';
 
 import breakpoints from 'styles/breakpoints';
 
@@ -15,7 +15,7 @@ export const DatePicker = styled(AntdDatePicker)`
   width: 100%;
 `;
 
-export const NameBirthdaySpace = styled(Space)`
+export const Space = styled(AntdSpace)`
   width: 100%;
   flex-direction: column;
 
@@ -25,6 +25,10 @@ export const NameBirthdaySpace = styled(Space)`
 
   .ant-space-item:first-child .ant-form-item {
     margin-bottom: 0;
+  }
+
+  .ant-space-item:last-child .ant-form-item {
+    margin-bottom: 8px;
   }
 
   ${breakpoints.greaterThan('sm')`
@@ -38,8 +42,22 @@ export const NameBirthdaySpace = styled(Space)`
       flex: 1;
     }
 
-    .ant-space-item:first-child .ant-form-item {
+    .ant-space-item:first-child .ant-form-item,
+    .ant-space-item:last-child .ant-form-item {
       margin-bottom: 24px;
     }
   `}
+`;
+
+export const CategoryValiditySpace = styled(Space)`
+  ${breakpoints.greaterThan('sm')`
+    .ant-space-item {
+      flex: 1;
+    }
+  `}
+`;
+
+export const NextButton = styled(Button)`
+  margin-left: auto;
+  display: block;
 `;
