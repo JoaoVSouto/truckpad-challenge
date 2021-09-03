@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Input, Form, Radio, Select, Button } from 'antd';
 import { LeftOutlined } from '@ant-design/icons';
 
+import { api } from 'services/api';
+
 import { BRAZILIAN_STATES } from 'utils/brazilianStates';
 
 import * as S from './styles';
@@ -20,15 +22,37 @@ type FormData = {
   complement?: string;
 };
 
+type IBGECityResponse = {
+  nome: string;
+};
+
 type AvailableLocals = 'Casa' | 'Trabalho';
 
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
   const [local, setLocal] = React.useState<AvailableLocals>('Casa');
+  const [cities, setCities] = React.useState<string[]>([]);
+  const [isFetchingCities, setIsFetchingCities] = React.useState(false);
 
   function handleFormSubmit(values: FormData) {
     console.log(values);
+  }
+
+  async function handleSelectStateChange(
+    stateInitials: keyof typeof BRAZILIAN_STATES,
+  ) {
+    setIsFetchingCities(true);
+
+    try {
+      const citiesResponse = await api.get<IBGECityResponse[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateInitials}/municipios`,
+      );
+      const parsedCities = citiesResponse.data.map(city => city.nome);
+      setCities(parsedCities);
+    } finally {
+      setIsFetchingCities(false);
+    }
   }
 
   return (
@@ -70,6 +94,8 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
             filterOption={(input, option) =>
               option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
+            onChange={handleSelectStateChange}
+            disabled={isFetchingCities}
           >
             {Object.entries(BRAZILIAN_STATES).map(([initials, name]) => (
               <Select.Option key={initials} value={initials}>
@@ -79,9 +105,16 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
           </Select>
         </Form.Item>
         <Form.Item name="city" label="Município" rules={[requiredRule]}>
-          <Select showSearch notFoundContent="Nenhum município encontrado">
-            <Select.Option value="jack">Jack</Select.Option>
-            <Select.Option value="lucy">Lucy</Select.Option>
+          <Select
+            showSearch
+            notFoundContent="Nenhum município encontrado"
+            loading={isFetchingCities}
+          >
+            {cities.map(city => (
+              <Select.Option key={city} value={city}>
+                {city}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
       </S.HalvedSpace>
