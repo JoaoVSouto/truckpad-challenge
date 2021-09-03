@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Modal, Steps } from 'antd';
 
-import { GeneralDriverDataForm } from 'components/GeneralDriverDataForm';
-import { AddressDriverForm } from 'components/AddressDriverForm';
+import { DriverGeneralDataForm } from 'components/DriverGeneralDataForm';
+import { DriverAddressForm } from 'components/DriverAddressForm';
 
 import * as S from './styles';
 
@@ -40,10 +40,10 @@ export function DriverConfigModal({
 
         <S.FormContainer>
           {currentStep === 0 && (
-            <GeneralDriverDataForm onNextPage={handleNextPage} />
+            <DriverGeneralDataForm onNextPage={handleNextPage} />
           )}
           {currentStep === 1 && (
-            <AddressDriverForm onPreviousPage={handlePreviousPage} />
+            <DriverAddressForm onPreviousPage={handlePreviousPage} />
           )}
         </S.FormContainer>
       </S.Container>

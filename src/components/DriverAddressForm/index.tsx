@@ -3,11 +3,11 @@ import { LeftOutlined } from '@ant-design/icons';
 
 import * as S from './styles';
 
-type AddressDriverForm = {
+type DriverAddressFormProps = {
   onPreviousPage: () => void;
 };
 
-export function AddressDriverForm({ onPreviousPage }: AddressDriverForm) {
+export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
   return (
     <Form layout="vertical" requiredMark>
       <S.Space>

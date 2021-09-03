@@ -5,11 +5,13 @@ import locale from 'antd/es/date-picker/locale/pt_BR';
 
 import * as S from './styles';
 
-type GeneralDriverDataForm = {
+type DriverGeneralDataFormProps = {
   onNextPage: () => void;
 };
 
-export function GeneralDriverDataForm({ onNextPage }: GeneralDriverDataForm) {
+export function DriverGeneralDataForm({
+  onNextPage,
+}: DriverGeneralDataFormProps) {
   const [registerCNH, setRegisterCNH] = React.useState(false);
 
   function handleFormSubmit() {
