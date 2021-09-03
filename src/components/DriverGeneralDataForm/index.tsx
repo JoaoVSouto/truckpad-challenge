@@ -8,28 +8,56 @@ import { Moment } from 'moment';
 
 import * as S from './styles';
 
+export type DriverGeneralData = {
+  name: string;
+  birthDate: string;
+  cpf: string;
+  cnh?: {
+    number: string;
+    category: string;
+    expiresAt: string;
+  };
+};
+
 type DriverGeneralDataFormProps = {
   onNextPage: () => void;
+  onSuccessfulSubmit: (payload: DriverGeneralData) => void;
 };
 
 type FormData = {
   name: string;
   cpf: string;
   birthDate: Moment;
-  CNHNumber?: string;
-  CNHExpirationDate?: Moment;
-  CNHCategories?: string[];
+  CNHNumber: string;
+  CNHExpirationDate: Moment;
+  CNHCategories: string[];
 };
 
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverGeneralDataForm({
   onNextPage,
+  onSuccessfulSubmit,
 }: DriverGeneralDataFormProps) {
   const [registerCNH, setRegisterCNH] = React.useState(false);
 
   function handleFormSubmit(values: FormData) {
-    console.log(values);
+    const payload = {
+      name: values.name,
+      birthDate: values.birthDate.utcOffset(0).startOf('day').toISOString(),
+      cpf: values.cpf.replace(/\D/g, ''),
+      cnh: registerCNH
+        ? {
+            number: values.CNHNumber,
+            category: [...values.CNHCategories].sort().join(''),
+            expiresAt: values.CNHExpirationDate.utcOffset(0)
+              .startOf('day')
+              .toISOString(),
+          }
+        : undefined,
+    };
+
+    onSuccessfulSubmit(payload);
     onNextPage();
   }
 
