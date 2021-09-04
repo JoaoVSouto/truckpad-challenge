@@ -71,9 +71,9 @@ export class DriverStore {
 
   isFetching = false;
 
-  isCreating = false;
-
   isFetchingSilently = false;
+
+  isCreating = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -97,7 +97,7 @@ export class DriverStore {
         this.total = Number(response.headers['x-total-count']);
       });
     } catch {
-      message.error('Erro ao buscar motoristas');
+      message.error('Erro ao buscar motoristas. Por favor, tente novamente.');
     } finally {
       runInAction(() => {
         this.isFetching = false;
@@ -191,6 +191,32 @@ export class DriverStore {
     } finally {
       runInAction(() => {
         this.isCreating = false;
+      });
+    }
+  };
+
+  deleteDriver = async (driverId: number) => {
+    const staleDrivers = this.data;
+    this.data = staleDrivers.filter(driver => driver.id !== driverId);
+    this.total -= 1;
+
+    try {
+      await api.delete(`drivers/${driverId}`);
+
+      runInAction(() => {
+        if (this.data.length === 0 && this.page > 1) {
+          this.page -= 1;
+          this.fetchDrivers();
+        } else {
+          this.fetchDriversSilently();
+        }
+      });
+    } catch {
+      message.error('Erro ao remover motorista. Por favor, tente novamente.');
+
+      runInAction(() => {
+        this.data = staleDrivers;
+        this.total += 1;
       });
     }
   };

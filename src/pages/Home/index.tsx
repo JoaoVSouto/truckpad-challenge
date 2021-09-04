@@ -18,7 +18,7 @@ import {
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
 import { differenceInYears } from 'date-fns';
 
-import { DriverStore } from 'store/driver';
+import { DriverStore, DriverData } from 'store/driver';
 
 import { DriverConfigModal } from 'components/DriverConfigModal';
 
@@ -28,66 +28,67 @@ type HomeProps = {
   driver: DriverStore;
 };
 
-const columns = [
-  {
-    title: 'Nome',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: 'Tipo de CNH',
-    dataIndex: 'CNHType',
-    key: 'CNHType',
-  },
-  {
-    title: 'Estado',
-    dataIndex: 'state',
-    key: 'state',
-    responsive: ['sm'] as Breakpoint[],
-  },
-  {
-    title: 'Cidade',
-    dataIndex: 'city',
-    key: 'city',
-    responsive: ['sm'] as Breakpoint[],
-  },
-  {
-    title: 'Idade',
-    dataIndex: 'age',
-    key: 'age',
-    responsive: ['sm'] as Breakpoint[],
-  },
-  {
-    title: 'Ações',
-    key: 'action',
-    render: () => (
-      <Space size="small">
-        <Tooltip title="Editar">
-          <Button type="primary" shape="circle" icon={<EditOutlined />} />
-        </Tooltip>
-        <Popconfirm
-          title="Confirma remoção?"
-          cancelText="Cancelar"
-          placement="right"
-        >
-          <Tooltip title="Remover">
-            <Button
-              type="primary"
-              shape="circle"
-              icon={<DeleteOutlined />}
-              danger
-            />
-          </Tooltip>
-        </Popconfirm>
-      </Space>
-    ),
-  },
-];
-
 export const Home = observer<HomeProps>(({ driver }) => {
   const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
     React.useState(false);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
+
+  const columns = [
+    {
+      title: 'Nome',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Tipo de CNH',
+      dataIndex: 'CNHType',
+      key: 'CNHType',
+    },
+    {
+      title: 'Estado',
+      dataIndex: 'state',
+      key: 'state',
+      responsive: ['sm'] as Breakpoint[],
+    },
+    {
+      title: 'Cidade',
+      dataIndex: 'city',
+      key: 'city',
+      responsive: ['sm'] as Breakpoint[],
+    },
+    {
+      title: 'Idade',
+      dataIndex: 'age',
+      key: 'age',
+      responsive: ['sm'] as Breakpoint[],
+    },
+    {
+      title: 'Ações',
+      key: 'action',
+      render: (_: unknown, record: DriverData) => (
+        <Space size="small">
+          <Tooltip title="Editar">
+            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+          </Tooltip>
+          <Popconfirm
+            title="Confirma remoção?"
+            cancelText="Cancelar"
+            placement="right"
+            onConfirm={() => driver.deleteDriver(record.id)}
+          >
+            <Tooltip title="Remover">
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<DeleteOutlined />}
+                danger
+              />
+            </Tooltip>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   const driversViews = driver.data.map(currentDriver => ({
     ...currentDriver,
