@@ -3,7 +3,6 @@ import InputMask from 'react-input-mask';
 import { Input, Form, Radio, Select } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { differenceInYears, isFuture } from 'date-fns';
-import locale from 'antd/es/date-picker/locale/pt_BR';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment, { Moment } from 'moment';
 
@@ -116,7 +115,7 @@ export function DriverGeneralDataForm({
             requiredRule,
           ]}
         >
-          <S.DatePicker placeholder="" locale={locale} format="DD-MM-YYYY" />
+          <S.DatePicker placeholder="" format="DD-MM-YYYY" />
         </Form.Item>
       </S.Space>
 
@@ -197,11 +196,7 @@ export function DriverGeneralDataForm({
               label="Validade"
               rules={[requiredRule]}
             >
-              <S.DatePicker
-                placeholder=""
-                locale={locale}
-                format="DD-MM-YYYY"
-              />
+              <S.DatePicker placeholder="" format="DD-MM-YYYY" />
             </Form.Item>
           </S.HalvedSpace>
         </>

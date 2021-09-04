@@ -194,6 +194,11 @@ export class DriverStore {
       });
     }
   };
+
+  changePage(page: number) {
+    this.page = page;
+    this.fetchDrivers();
+  }
 }
 
 export const driverStore = new DriverStore();

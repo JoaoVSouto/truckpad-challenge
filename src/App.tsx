@@ -1,4 +1,6 @@
 import { ThemeProvider } from 'styled-components';
+import { ConfigProvider } from 'antd';
+import locale from 'antd/lib/locale/pt_BR';
 
 import { driverStore } from 'store/driver';
 
@@ -12,11 +14,13 @@ import light from 'styles/themes/light';
 export default function App() {
   return (
     <ThemeProvider theme={light}>
-      <Header />
+      <ConfigProvider locale={locale}>
+        <Header />
 
-      <Home driver={driverStore} />
+        <Home driver={driverStore} />
 
-      <GlobalStyles />
+        <GlobalStyles />
+      </ConfigProvider>
     </ThemeProvider>
   );
 }
