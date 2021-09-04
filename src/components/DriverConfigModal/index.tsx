@@ -14,6 +14,10 @@ import * as S from './styles';
 
 type DriverConfigModalProps = {
   visible: boolean;
+  isCreating: boolean;
+  createDriver: (
+    data: DriverGeneralData & { address: DriverAddressData },
+  ) => Promise<void>;
   onRequestClose: () => void;
 };
 
@@ -22,6 +26,8 @@ type DriverData = {
 } & Partial<DriverGeneralData>;
 
 export function DriverConfigModal({
+  createDriver,
+  isCreating,
   onRequestClose,
   visible,
 }: DriverConfigModalProps) {
@@ -37,6 +43,10 @@ export function DriverConfigModal({
   }
 
   function handleModalClose() {
+    if (isCreating) {
+      return;
+    }
+
     setDriverData(null);
     setCurrentStep(0);
     onRequestClose();
@@ -46,8 +56,15 @@ export function DriverConfigModal({
     setDriverData(state => ({ ...state, ...payload }));
   }
 
-  function handleDriverAddressFormSubmit(payload: DriverAddressData) {
-    setDriverData(state => ({ ...state, address: payload }));
+  async function handleDriverAddressFormSubmit(payload: DriverAddressData) {
+    await createDriver({
+      address: payload,
+      birthDate: driverData?.birthDate || '',
+      cpf: driverData?.cpf || '',
+      name: driverData?.name || '',
+      cnh: driverData?.cnh,
+    });
+    handleModalClose();
   }
 
   return (
@@ -73,6 +90,7 @@ export function DriverConfigModal({
           )}
           {currentStep === 1 && (
             <DriverAddressForm
+              isLoading={isCreating}
               initialValues={driverData?.address}
               onPreviousPage={handlePreviousPage}
               onSuccessfulSubmit={handleDriverAddressFormSubmit}

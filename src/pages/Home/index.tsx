@@ -1,11 +1,24 @@
 import * as React from 'react';
 import { observer } from 'mobx-react-lite';
-import { Table, Space, Button, Tooltip, Popconfirm, Typography } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  Table,
+  Space,
+  Button,
+  Tooltip,
+  Popconfirm,
+  Typography,
+  Spin,
+} from 'antd';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  PlusOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
 import { differenceInYears } from 'date-fns';
 
-import { DriverStore, DriverData } from 'store/driver';
+import { DriverStore } from 'store/driver';
 
 import { DriverConfigModal } from 'components/DriverConfigModal';
 
@@ -13,14 +26,6 @@ import * as S from './styles';
 
 type HomeProps = {
   driver: DriverStore;
-};
-
-type DriverView = DriverData & {
-  key: number;
-  CNHType: string;
-  state: string;
-  city: string;
-  age: number;
 };
 
 const columns = [
@@ -84,18 +89,14 @@ export const Home = observer<HomeProps>(({ driver }) => {
     React.useState(false);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
 
-  const driversViews = React.useMemo<DriverView[]>(
-    () =>
-      driver.data.map(currentDriver => ({
-        ...currentDriver,
-        key: currentDriver.id,
-        CNHType: currentDriver.cnh ? currentDriver.cnh.category : '-',
-        state: currentDriver.address.state,
-        city: currentDriver.address.city,
-        age: differenceInYears(new Date(), new Date(currentDriver.birthDate)),
-      })),
-    [driver.data],
-  );
+  const driversViews = driver.data.map(currentDriver => ({
+    ...currentDriver,
+    key: currentDriver.id,
+    CNHType: currentDriver.cnh ? currentDriver.cnh.category : '-',
+    state: currentDriver.address.state,
+    city: currentDriver.address.city,
+    age: differenceInYears(new Date(), new Date(currentDriver.birthDate)),
+  }));
 
   React.useEffect(() => {
     if (isFirstRender) {
@@ -116,9 +117,14 @@ export const Home = observer<HomeProps>(({ driver }) => {
   return (
     <S.Container>
       <S.Header>
-        <Typography.Title level={2}>
-          Gerenciamento de motoristas
-        </Typography.Title>
+        <S.TitleContainer>
+          <Typography.Title level={2}>
+            Gerenciamento de motoristas
+          </Typography.Title>
+          {driver.isFetchingSilently && (
+            <Spin indicator={<LoadingOutlined />} />
+          )}
+        </S.TitleContainer>
 
         <Button
           type="primary"
@@ -139,12 +145,15 @@ export const Home = observer<HomeProps>(({ driver }) => {
           position: ['bottomCenter'],
           hideOnSinglePage: true,
           showSizeChanger: false,
+          disabled: driver.isFetching,
         }}
       />
 
       <DriverConfigModal
         visible={isDriverConfigModalVisible}
         onRequestClose={handleDriverConfigModalClose}
+        createDriver={driver.createDriver}
+        isCreating={driver.isCreating}
       />
     </S.Container>
   );

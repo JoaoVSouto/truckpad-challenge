@@ -15,7 +15,7 @@ export const Header = styled.div`
 
   margin-bottom: 1rem;
 
-  h2 {
+  .ant-typography {
     margin-bottom: 0.5rem;
   }
 
@@ -24,8 +24,21 @@ export const Header = styled.div`
     justify-content: space-between;
     align-items: center;
 
-    h2 {
+    .ant-typography {
       margin-bottom: 0;
     }
+  `}
+`;
+
+export const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+
+  .ant-spin {
+    margin: 0 1rem;
+  }
+
+  ${breakpoints.greaterThan('md')`
+    align-items: baseline;
   `}
 `;

@@ -21,6 +21,7 @@ export type DriverAddressData = {
 };
 
 type DriverAddressFormProps = {
+  isLoading: boolean;
   initialValues?: Partial<DriverAddressData>;
   onPreviousPage: () => void;
   onSuccessfulSubmit: (payload: DriverAddressData) => void;
@@ -55,6 +56,7 @@ type AvailableLocals = 'Casa' | 'Trabalho';
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverAddressForm({
+  isLoading,
   initialValues,
   onPreviousPage,
   onSuccessfulSubmit,
@@ -272,10 +274,15 @@ export function DriverAddressForm({
       </S.ThirdSpace>
 
       <S.ButtonsContainer>
-        <Button type="ghost" icon={<LeftOutlined />} onClick={onPreviousPage}>
+        <Button
+          type="ghost"
+          icon={<LeftOutlined />}
+          onClick={onPreviousPage}
+          disabled={isLoading}
+        >
           Anterior
         </Button>
-        <Button htmlType="submit" type="primary">
+        <Button htmlType="submit" type="primary" loading={isLoading}>
           Salvar
         </Button>
       </S.ButtonsContainer>

@@ -67,9 +67,13 @@ export class DriverStore {
 
   total = 0;
 
-  limitPerPage = 10;
+  limitPerPage = 5;
 
   isFetching = false;
+
+  isCreating = false;
+
+  isFetchingSilently = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -100,6 +104,96 @@ export class DriverStore {
       });
     }
   }
+
+  async fetchDriversSilently() {
+    this.isFetchingSilently = true;
+
+    try {
+      const response = await api.get<Driver[]>('drivers', {
+        params: {
+          _page: this.page,
+          _limit: this.limitPerPage,
+        },
+      });
+
+      const parsedDrivers = response.data.map(parseDriver);
+
+      runInAction(() => {
+        this.data = parsedDrivers;
+        this.total = Number(response.headers['x-total-count']);
+      });
+    } finally {
+      runInAction(() => {
+        this.isFetchingSilently = false;
+      });
+    }
+  }
+
+  createDriver = async (driverData: Omit<DriverData, 'id'>) => {
+    const payload: Omit<Driver, 'id'> = {
+      name: driverData.name,
+      birth_date: driverData.birthDate,
+      state: driverData.address.state,
+      city: driverData.address.city,
+      documents: [
+        ...(driverData.cnh
+          ? [
+              {
+                country: 'BR',
+                expires_at: driverData.cnh.expiresAt,
+                number: driverData.cnh.number,
+                category: driverData.cnh.category,
+                doc_type: 'CNH' as const,
+              },
+            ]
+          : []),
+        {
+          country: 'BR',
+          number: driverData.cpf,
+          doc_type: 'CPF',
+        },
+      ],
+      addresses: {
+        name: driverData.address.name,
+        state: driverData.address.state,
+        country: 'BR',
+        neighborhood: driverData.address.neighborhood,
+        city: driverData.address.city,
+        street_number: driverData.address.streetNumber,
+        complement: driverData.address.complement,
+        postal_code: driverData.address.postalCode,
+        street_name: driverData.address.streetName,
+      },
+    };
+
+    this.isCreating = true;
+
+    try {
+      const driverResponse = await api.post('drivers', payload);
+
+      message.success('Motorista criado com sucesso!');
+
+      runInAction(() => {
+        this.total += 1;
+      });
+
+      if (this.data.length < this.limitPerPage) {
+        runInAction(() => {
+          this.data.push({
+            ...driverData,
+            id: driverResponse.data.id,
+          });
+        });
+      }
+    } catch {
+      message.error('Erro ao criar motorista. Por favor, tente novamente.');
+      throw new Error('Unable to create driver');
+    } finally {
+      runInAction(() => {
+        this.isCreating = false;
+      });
+    }
+  };
 }
 
 export const driverStore = new DriverStore();
