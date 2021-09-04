@@ -5,7 +5,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { differenceInYears, isFuture } from 'date-fns';
 import locale from 'antd/es/date-picker/locale/pt_BR';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 import * as S from './styles';
 
@@ -21,6 +21,7 @@ export type DriverGeneralData = {
 };
 
 type DriverGeneralDataFormProps = {
+  initialValues: Partial<DriverGeneralData> | null;
   onNextPage: () => void;
   onSuccessfulSubmit: (payload: DriverGeneralData) => void;
 };
@@ -37,23 +38,24 @@ type FormData = {
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverGeneralDataForm({
+  initialValues,
   onNextPage,
   onSuccessfulSubmit,
 }: DriverGeneralDataFormProps) {
-  const [registerCNH, setRegisterCNH] = React.useState(false);
+  const [registerCNH, setRegisterCNH] = React.useState(
+    Boolean(initialValues?.cnh),
+  );
 
   function handleFormSubmit(values: FormData) {
     const payload = {
       name: values.name,
-      birthDate: values.birthDate.utcOffset(0).startOf('day').toISOString(),
+      birthDate: values.birthDate.startOf('day').toISOString(),
       cpf: values.cpf.replace(/\D/g, ''),
       cnh: registerCNH
         ? {
             number: values.CNHNumber,
             category: [...values.CNHCategories].sort().join(''),
-            expiresAt: values.CNHExpirationDate.utcOffset(0)
-              .startOf('day')
-              .toISOString(),
+            expiresAt: values.CNHExpirationDate.startOf('day').toISOString(),
           }
         : undefined,
     };
@@ -63,7 +65,21 @@ export function DriverGeneralDataForm({
   }
 
   return (
-    <Form layout="vertical" requiredMark onFinish={handleFormSubmit}>
+    <Form
+      layout="vertical"
+      requiredMark
+      onFinish={handleFormSubmit}
+      initialValues={{
+        name: initialValues?.name,
+        birthDate: initialValues ? moment(initialValues?.birthDate) : '',
+        cpf: initialValues?.cpf,
+        CNHNumber: initialValues?.cnh?.number,
+        CNHCategories: initialValues?.cnh?.category.split(''),
+        CNHExpirationDate: initialValues?.cnh
+          ? moment(initialValues?.cnh.expiresAt)
+          : '',
+      }}
+    >
       <S.Space>
         <Form.Item
           name="name"
@@ -111,8 +127,15 @@ export function DriverGeneralDataForm({
           rules={[
             requiredRule,
             {
-              pattern: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
-              message: 'CPF inválido',
+              validator(_, value: string) {
+                const cpfNumber = value.replace(/\D/g, '');
+
+                if (cpfNumber.length < 11) {
+                  return Promise.reject(new Error('CPF inválido'));
+                }
+
+                return Promise.resolve();
+              },
               validateTrigger: 'onSubmit',
             },
           ]}

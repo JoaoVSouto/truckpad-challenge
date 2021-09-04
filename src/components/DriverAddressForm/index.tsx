@@ -21,6 +21,7 @@ export type DriverAddressData = {
 };
 
 type DriverAddressFormProps = {
+  initialValues?: Partial<DriverAddressData>;
   onPreviousPage: () => void;
   onSuccessfulSubmit: (payload: DriverAddressData) => void;
 };
@@ -54,12 +55,15 @@ type AvailableLocals = 'Casa' | 'Trabalho';
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
 export function DriverAddressForm({
+  initialValues,
   onPreviousPage,
   onSuccessfulSubmit,
 }: DriverAddressFormProps) {
   const [form] = Form.useForm();
 
-  const [local, setLocal] = React.useState<AvailableLocals>('Casa');
+  const [local, setLocal] = React.useState<AvailableLocals>(
+    (initialValues?.name as AvailableLocals) ?? 'Casa',
+  );
   const [cities, setCities] = React.useState<string[]>([]);
   const [isFetchingCities, setIsFetchingCities] = React.useState(false);
   const [isFetchingAddress, setIsFetchingAddress] = React.useState(false);
@@ -113,7 +117,9 @@ export function DriverAddressForm({
         city: postalCodeResponse.data.localidade,
         streetName: postalCodeResponse.data.logradouro,
         neighborhood: postalCodeResponse.data.bairro,
-        complement: postalCodeResponse.data.complemento,
+        ...(postalCodeResponse.data.complemento
+          ? { complement: postalCodeResponse.data.complemento }
+          : {}),
       });
     } finally {
       setIsFetchingAddress(false);
@@ -140,6 +146,15 @@ export function DriverAddressForm({
       requiredMark
       form={form}
       onFinish={handleFormSubmit}
+      initialValues={{
+        postalCode: initialValues?.postalCode,
+        state: initialValues?.state,
+        city: initialValues?.city,
+        streetName: initialValues?.streetName,
+        neighborhood: initialValues?.neighborhood,
+        streetNumber: initialValues?.streetNumber,
+        complement: initialValues?.complement,
+      }}
     >
       <S.Space>
         <Form.Item

@@ -66,12 +66,14 @@ export function DriverConfigModal({
         <S.FormContainer>
           {currentStep === 0 && (
             <DriverGeneralDataForm
+              initialValues={driverData}
               onNextPage={handleNextPage}
               onSuccessfulSubmit={handleDriverGeneralDataFormSubmit}
             />
           )}
           {currentStep === 1 && (
             <DriverAddressForm
+              initialValues={driverData?.address}
               onPreviousPage={handlePreviousPage}
               onSuccessfulSubmit={handleDriverAddressFormSubmit}
             />
