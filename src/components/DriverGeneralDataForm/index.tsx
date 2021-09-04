@@ -115,7 +115,7 @@ export function DriverGeneralDataForm({
             requiredRule,
           ]}
         >
-          <S.DatePicker placeholder="" format="DD-MM-YYYY" />
+          <S.DatePicker placeholder="" format="DD/MM/YYYY" />
         </Form.Item>
       </S.Space>
 
@@ -196,7 +196,7 @@ export function DriverGeneralDataForm({
               label="Validade"
               rules={[requiredRule]}
             >
-              <S.DatePicker placeholder="" format="DD-MM-YYYY" />
+              <S.DatePicker placeholder="" format="DD/MM/YYYY" />
             </Form.Item>
           </S.HalvedSpace>
         </>
