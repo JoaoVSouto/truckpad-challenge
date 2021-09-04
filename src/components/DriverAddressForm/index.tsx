@@ -9,8 +9,20 @@ import { BRAZILIAN_STATES } from 'utils/brazilianStates';
 
 import * as S from './styles';
 
+export type DriverAddressData = {
+  postalCode: string;
+  name: string;
+  state: string;
+  city: string;
+  streetName: string;
+  neighborhood: string;
+  streetNumber?: number;
+  complement?: string;
+};
+
 type DriverAddressFormProps = {
   onPreviousPage: () => void;
+  onSuccessfulSubmit: (payload: DriverAddressData) => void;
 };
 
 type FormData = {
@@ -41,7 +53,10 @@ type AvailableLocals = 'Casa' | 'Trabalho';
 
 const requiredRule = { required: true, message: 'Campo obrigatório' };
 
-export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
+export function DriverAddressForm({
+  onPreviousPage,
+  onSuccessfulSubmit,
+}: DriverAddressFormProps) {
   const [form] = Form.useForm();
 
   const [local, setLocal] = React.useState<AvailableLocals>('Casa');
@@ -50,7 +65,18 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
   const [isFetchingAddress, setIsFetchingAddress] = React.useState(false);
 
   function handleFormSubmit(values: FormData) {
-    console.log(values);
+    const payload = {
+      postalCode: values.postalCode,
+      name: local,
+      state: values.state,
+      city: values.city,
+      streetName: values.streetName,
+      neighborhood: values.neighborhood,
+      streetNumber: Number(values.streetNumber) || undefined,
+      complement: values.complement || undefined,
+    };
+
+    onSuccessfulSubmit(payload);
   }
 
   async function fetchStateCities(stateInitials: string) {

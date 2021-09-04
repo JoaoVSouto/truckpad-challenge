@@ -5,7 +5,10 @@ import {
   DriverGeneralDataForm,
   DriverGeneralData,
 } from 'components/DriverGeneralDataForm';
-import { DriverAddressForm } from 'components/DriverAddressForm';
+import {
+  DriverAddressForm,
+  DriverAddressData,
+} from 'components/DriverAddressForm';
 
 import * as S from './styles';
 
@@ -15,17 +18,8 @@ type DriverConfigModalProps = {
 };
 
 type DriverData = {
-  address?: {
-    postalCode: string;
-    name: string;
-    state: string;
-    city: string;
-    streetName: string;
-    neighborhood: string;
-    street_number?: number;
-    complement?: string;
-  };
-} & DriverGeneralData;
+  address?: DriverAddressData;
+} & Partial<DriverGeneralData>;
 
 export function DriverConfigModal({
   onRequestClose,
@@ -52,6 +46,10 @@ export function DriverConfigModal({
     setDriverData(state => ({ ...state, ...payload }));
   }
 
+  function handleDriverAddressFormSubmit(payload: DriverAddressData) {
+    setDriverData(state => ({ ...state, address: payload }));
+  }
+
   return (
     <Modal
       visible={visible}
@@ -73,7 +71,10 @@ export function DriverConfigModal({
             />
           )}
           {currentStep === 1 && (
-            <DriverAddressForm onPreviousPage={handlePreviousPage} />
+            <DriverAddressForm
+              onPreviousPage={handlePreviousPage}
+              onSuccessfulSubmit={handleDriverAddressFormSubmit}
+            />
           )}
         </S.FormContainer>
       </S.Container>
