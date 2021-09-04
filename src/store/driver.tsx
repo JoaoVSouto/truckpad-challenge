@@ -67,6 +67,8 @@ export class DriverStore {
 
   total = 0;
 
+  limitPerPage = 10;
+
   isFetching = false;
 
   constructor() {
@@ -80,7 +82,7 @@ export class DriverStore {
       const response = await api.get<Driver[]>('drivers', {
         params: {
           _page: this.page,
-          _limit: 10,
+          _limit: this.limitPerPage,
         },
       });
 

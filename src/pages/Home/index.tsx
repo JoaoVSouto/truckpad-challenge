@@ -134,6 +134,8 @@ export const Home = observer<HomeProps>(({ driver }) => {
         loading={driver.isFetching}
         dataSource={driversViews}
         pagination={{
+          total: driver.total,
+          pageSize: driver.limitPerPage,
           position: ['bottomCenter'],
           hideOnSinglePage: true,
           showSizeChanger: false,
