@@ -195,8 +195,13 @@ export class DriverStore {
     }
   };
 
-  changePage(page: number) {
+  changePage(page: number, limitPerPage?: number) {
     this.page = page;
+
+    if (limitPerPage) {
+      this.limitPerPage = limitPerPage;
+    }
+
     this.fetchDrivers();
   }
 }

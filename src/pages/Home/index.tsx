@@ -144,10 +144,10 @@ export const Home = observer<HomeProps>(({ driver }) => {
           total: driver.total,
           pageSize: driver.limitPerPage,
           position: ['bottomCenter'],
-          hideOnSinglePage: true,
-          showSizeChanger: false,
+          showSizeChanger: true,
           disabled: driver.isFetching,
-          onChange: page => driver.changePage(page),
+          pageSizeOptions: ['5', '10', '15', '20'],
+          onChange: (page, pageSize) => driver.changePage(page, pageSize),
         }}
       />
 
