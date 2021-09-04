@@ -1,11 +1,18 @@
 import * as React from 'react';
+import { observer } from 'mobx-react-lite';
 import { Table, Space, Button, Tooltip, Popconfirm, Typography } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
 
+import { DriverStore } from 'store/driver';
+
 import { DriverConfigModal } from 'components/DriverConfigModal';
 
 import * as S from './styles';
+
+type HomeProps = {
+  driver: DriverStore;
+};
 
 const columns = [
   {
@@ -74,7 +81,7 @@ const data = [
   },
 ];
 
-export function Home() {
+export const Home = observer<HomeProps>(() => {
   const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
     React.useState(false);
 
@@ -117,4 +124,4 @@ export function Home() {
       />
     </S.Container>
   );
-}
+});

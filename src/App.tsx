@@ -1,5 +1,7 @@
 import { ThemeProvider } from 'styled-components';
 
+import { driverStore } from 'store/driver';
+
 import { Home } from 'pages/Home';
 
 import { Header } from 'components/Header';
@@ -12,7 +14,7 @@ export default function App() {
     <ThemeProvider theme={light}>
       <Header />
 
-      <Home />
+      <Home driver={driverStore} />
 
       <GlobalStyles />
     </ThemeProvider>
