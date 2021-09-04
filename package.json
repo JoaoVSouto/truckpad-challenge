@@ -22,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:mock-server": "json-server --watch mock/db.json --port 3333",
+    "start:mock-server": "json-server --watch mock/db.json --port 3333 --delay 500",
     "dev": "concurrently 'yarn start' 'yarn start:mock-server'"
   },
   "eslintConfig": {

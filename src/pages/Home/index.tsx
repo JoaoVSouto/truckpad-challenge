@@ -3,8 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { Table, Space, Button, Tooltip, Popconfirm, Typography } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { Breakpoint } from 'antd/lib/_util/responsiveObserve';
+import { differenceInYears } from 'date-fns';
 
-import { DriverStore } from 'store/driver';
+import { DriverStore, DriverData } from 'store/driver';
 
 import { DriverConfigModal } from 'components/DriverConfigModal';
 
@@ -12,6 +13,14 @@ import * as S from './styles';
 
 type HomeProps = {
   driver: DriverStore;
+};
+
+type DriverView = DriverData & {
+  key: number;
+  CNHType: string;
+  state: string;
+  city: string;
+  age: number;
 };
 
 const columns = [
@@ -70,20 +79,31 @@ const columns = [
   },
 ];
 
-const data = [
-  {
-    key: 1,
-    name: 'Pouca Tripa',
-    age: 32,
-    state: 'São Paulo',
-    city: 'São Paulo',
-    CNHType: 'A',
-  },
-];
-
-export const Home = observer<HomeProps>(() => {
+export const Home = observer<HomeProps>(({ driver }) => {
   const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
     React.useState(false);
+  const [isFirstRender, setIsFirstRender] = React.useState(true);
+
+  const driversViews = React.useMemo<DriverView[]>(
+    () =>
+      driver.data.map(currentDriver => ({
+        ...currentDriver,
+        key: currentDriver.id,
+        CNHType: currentDriver.cnh ? currentDriver.cnh.category : '-',
+        state: currentDriver.address.state,
+        city: currentDriver.address.city,
+        age: differenceInYears(new Date(), new Date(currentDriver.birthDate)),
+      })),
+    [driver.data],
+  );
+
+  React.useEffect(() => {
+    if (isFirstRender) {
+      driver.fetchDrivers();
+    } else {
+      setIsFirstRender(false);
+    }
+  }, [driver, isFirstRender]);
 
   function handleDriverConfigModalOpen() {
     setIsDriverConfigModalVisible(true);
@@ -110,7 +130,9 @@ export const Home = observer<HomeProps>(() => {
       </S.Header>
       <Table
         columns={columns}
-        dataSource={data}
+        locale={{ emptyText: 'Nenhum motorista encontrado' }}
+        loading={driver.isFetching}
+        dataSource={driversViews}
         pagination={{
           position: ['bottomCenter'],
           hideOnSinglePage: true,

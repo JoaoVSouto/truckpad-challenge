@@ -1,6 +1,7 @@
 {
   "drivers": [
     {
+      "id": 1,
       "name": "Pouca Tripa",
       "birth_date": "1976-09-22T00:00:00",
       "state": "São Paulo",
@@ -27,30 +28,6 @@
         {
           "country": "BR",
           "number": "32132132188",
-          "doc_type": "CPF"
-        }
-      ]
-    },
-    {
-      "name": "Quase nada",
-      "birth_date": "1986-09-22T00:00:00",
-      "state": "Rio de Janeiro",
-      "city": "Niterói",
-      "addresses": {
-        "name": "",
-        "state": "",
-        "country": "",
-        "neighborhood": "",
-        "city": "",
-        "street_number": "",
-        "complement": "",
-        "postal_code": "",
-        "street_name": ""
-      },
-      "documents": [
-        {
-          "country": "BR",
-          "number": "12312312377",
           "doc_type": "CPF"
         }
       ]
