@@ -20,6 +20,8 @@ import { differenceInYears } from 'date-fns';
 
 import { DriverStore, DriverData } from 'store/driver';
 
+import { usePolling } from 'hooks/usePolling';
+
 import { DriverConfigModal } from 'components/DriverConfigModal';
 
 import * as S from './styles';
@@ -29,6 +31,8 @@ type HomeProps = {
 };
 
 export const Home = observer<HomeProps>(({ driver }) => {
+  usePolling(() => driver.fetchDriversSilently(), 1000 * 20);
+
   const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
     React.useState(false);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
