@@ -1,4 +1,5 @@
 import * as React from 'react';
+import InputMask from 'react-input-mask';
 import { Input, Form, Radio, Select } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
 import { differenceInYears, isFuture } from 'date-fns';
@@ -112,10 +113,13 @@ export function DriverGeneralDataForm({
             {
               pattern: /^\d{3}\.\d{3}\.\d{3}-\d{2}$/,
               message: 'CPF inválido',
+              validateTrigger: 'onSubmit',
             },
           ]}
         >
-          <Input placeholder="999.999.999-99" maxLength={14} />
+          <InputMask mask="999.999.999-99">
+            <Input />
+          </InputMask>
         </Form.Item>
         <Form.Item label="Registrar CNH?">
           <div>

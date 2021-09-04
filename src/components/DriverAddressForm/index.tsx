@@ -1,4 +1,5 @@
 import * as React from 'react';
+import InputMask from 'react-input-mask';
 import { Input, Form, Radio, Select, Button, Spin } from 'antd';
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
@@ -123,18 +124,21 @@ export function DriverAddressForm({ onPreviousPage }: DriverAddressFormProps) {
             {
               pattern: /^[0-9]{5}-[0-9]{3}$/,
               message: 'CEP inválido',
+              validateTrigger: 'onSubmit',
             },
           ]}
         >
-          <Input
-            placeholder="99999-999"
+          <InputMask
+            mask="99999-999"
             onChange={handlePostalCodeChange}
-            maxLength={9}
             disabled={isFetchingAddress}
-            suffix={
-              isFetchingAddress && <Spin indicator={<LoadingOutlined />} />
-            }
-          />
+          >
+            <Input
+              suffix={
+                isFetchingAddress && <Spin indicator={<LoadingOutlined />} />
+              }
+            />
+          </InputMask>
         </Form.Item>
         <Form.Item label="Local">
           <div>
