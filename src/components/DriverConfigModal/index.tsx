@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Modal, Steps } from 'antd';
 
+import { DriverData as StoreDriverData } from 'store/driver';
+
 import {
   DriverGeneralDataForm,
   DriverGeneralData,
@@ -12,27 +14,36 @@ import {
 
 import * as S from './styles';
 
-type DriverConfigModalProps = {
-  visible: boolean;
-  isCreating: boolean;
-  createDriver: (
-    data: DriverGeneralData & { address: DriverAddressData },
-  ) => Promise<void>;
-  onRequestClose: () => void;
-};
-
 type DriverData = {
+  id?: number;
   address?: DriverAddressData;
 } & Partial<DriverGeneralData>;
 
+type DriverConfigModalProps = {
+  visible: boolean;
+  isCreating: boolean;
+  initialData?: DriverData | null;
+  createDriver: (data: Omit<StoreDriverData, 'id'>) => Promise<void>;
+  updateDriver: (data: StoreDriverData) => Promise<void>;
+  onRequestClose: () => void;
+};
+
 export function DriverConfigModal({
   createDriver,
+  updateDriver,
   isCreating,
+  initialData = null,
   onRequestClose,
   visible,
 }: DriverConfigModalProps) {
   const [currentStep, setCurrentStep] = React.useState(0);
-  const [driverData, setDriverData] = React.useState<DriverData | null>(null);
+  const [driverData, setDriverData] = React.useState<DriverData | null>(
+    initialData,
+  );
+
+  React.useEffect(() => {
+    setDriverData(initialData);
+  }, [initialData]);
 
   function handleNextPage() {
     setCurrentStep(state => state + 1);
@@ -57,13 +68,26 @@ export function DriverConfigModal({
   }
 
   async function handleDriverAddressFormSubmit(payload: DriverAddressData) {
-    await createDriver({
-      address: payload,
-      birthDate: driverData?.birthDate || '',
-      cpf: driverData?.cpf || '',
-      name: driverData?.name || '',
-      cnh: driverData?.cnh,
-    });
+    const isOnEditingMode = !!driverData?.id;
+
+    if (isOnEditingMode) {
+      await updateDriver({
+        id: driverData.id ?? 0,
+        address: payload,
+        birthDate: driverData?.birthDate || '',
+        cpf: driverData?.cpf || '',
+        name: driverData?.name || '',
+        cnh: driverData?.cnh,
+      });
+    } else {
+      await createDriver({
+        address: payload,
+        birthDate: driverData?.birthDate || '',
+        cpf: driverData?.cpf || '',
+        name: driverData?.name || '',
+        cnh: driverData?.cnh,
+      });
+    }
     handleModalClose();
   }
 

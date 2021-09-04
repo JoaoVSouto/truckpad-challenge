@@ -166,7 +166,7 @@ export function DriverGeneralDataForm({
               label="Número da CNH"
               rules={[
                 requiredRule,
-                { min: 11, message: 'Mínimo de 11 dígitos' },
+                { min: 9, message: 'Mínimo de 9 dígitos' },
                 {
                   pattern: /^\d*$/,
                   message: 'Somente números permitidos',

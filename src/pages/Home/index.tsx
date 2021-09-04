@@ -32,6 +32,21 @@ export const Home = observer<HomeProps>(({ driver }) => {
   const [isDriverConfigModalVisible, setIsDriverConfigModalVisible] =
     React.useState(false);
   const [isFirstRender, setIsFirstRender] = React.useState(true);
+  const [currentEditingDriver, setCurrentEditingDriver] =
+    React.useState<DriverData | null>(null);
+
+  React.useEffect(() => {
+    if (isFirstRender) {
+      driver.fetchDrivers();
+    } else {
+      setIsFirstRender(false);
+    }
+  }, [driver, isFirstRender]);
+
+  function handleEditDriver(editingDriver: DriverData) {
+    setCurrentEditingDriver(editingDriver);
+    setIsDriverConfigModalVisible(true);
+  }
 
   const columns = [
     {
@@ -68,7 +83,12 @@ export const Home = observer<HomeProps>(({ driver }) => {
       render: (_: unknown, record: DriverData) => (
         <Space size="small">
           <Tooltip title="Editar">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+              onClick={() => handleEditDriver(record)}
+            />
           </Tooltip>
           <Popconfirm
             title="Confirma remoção?"
@@ -99,19 +119,12 @@ export const Home = observer<HomeProps>(({ driver }) => {
     age: differenceInYears(new Date(), new Date(currentDriver.birthDate)),
   }));
 
-  React.useEffect(() => {
-    if (isFirstRender) {
-      driver.fetchDrivers();
-    } else {
-      setIsFirstRender(false);
-    }
-  }, [driver, isFirstRender]);
-
   function handleDriverConfigModalOpen() {
     setIsDriverConfigModalVisible(true);
   }
 
   function handleDriverConfigModalClose() {
+    setCurrentEditingDriver(null);
     setIsDriverConfigModalVisible(false);
   }
 
@@ -156,7 +169,9 @@ export const Home = observer<HomeProps>(({ driver }) => {
         visible={isDriverConfigModalVisible}
         onRequestClose={handleDriverConfigModalClose}
         createDriver={driver.createDriver}
+        updateDriver={driver.updateDriver}
         isCreating={driver.isCreating}
+        initialData={currentEditingDriver}
       />
     </S.Container>
   );

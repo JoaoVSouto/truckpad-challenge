@@ -60,6 +60,44 @@ function parseDriver(driver: Driver) {
   };
 }
 
+function mountDriverPayload(driverData: Omit<DriverData, 'id'>) {
+  return {
+    name: driverData.name,
+    birth_date: driverData.birthDate,
+    state: driverData.address.state,
+    city: driverData.address.city,
+    documents: [
+      ...(driverData.cnh
+        ? [
+            {
+              country: 'BR',
+              expires_at: driverData.cnh.expiresAt,
+              number: driverData.cnh.number,
+              category: driverData.cnh.category,
+              doc_type: 'CNH' as const,
+            },
+          ]
+        : []),
+      {
+        country: 'BR',
+        number: driverData.cpf,
+        doc_type: 'CPF',
+      },
+    ],
+    addresses: {
+      name: driverData.address.name,
+      state: driverData.address.state,
+      country: 'BR',
+      neighborhood: driverData.address.neighborhood,
+      city: driverData.address.city,
+      street_number: driverData.address.streetNumber,
+      complement: driverData.address.complement,
+      postal_code: driverData.address.postalCode,
+      street_name: driverData.address.streetName,
+    },
+  };
+}
+
 export class DriverStore {
   data: DriverData[] = [];
 
@@ -130,41 +168,7 @@ export class DriverStore {
   }
 
   createDriver = async (driverData: Omit<DriverData, 'id'>) => {
-    const payload: Omit<Driver, 'id'> = {
-      name: driverData.name,
-      birth_date: driverData.birthDate,
-      state: driverData.address.state,
-      city: driverData.address.city,
-      documents: [
-        ...(driverData.cnh
-          ? [
-              {
-                country: 'BR',
-                expires_at: driverData.cnh.expiresAt,
-                number: driverData.cnh.number,
-                category: driverData.cnh.category,
-                doc_type: 'CNH' as const,
-              },
-            ]
-          : []),
-        {
-          country: 'BR',
-          number: driverData.cpf,
-          doc_type: 'CPF',
-        },
-      ],
-      addresses: {
-        name: driverData.address.name,
-        state: driverData.address.state,
-        country: 'BR',
-        neighborhood: driverData.address.neighborhood,
-        city: driverData.address.city,
-        street_number: driverData.address.streetNumber,
-        complement: driverData.address.complement,
-        postal_code: driverData.address.postalCode,
-        street_name: driverData.address.streetName,
-      },
-    };
+    const payload = mountDriverPayload(driverData);
 
     this.isCreating = true;
 
@@ -217,6 +221,31 @@ export class DriverStore {
       runInAction(() => {
         this.data = staleDrivers;
         this.total += 1;
+      });
+    }
+  };
+
+  updateDriver = async (driverData: DriverData) => {
+    const payload = mountDriverPayload(driverData);
+
+    this.isCreating = true;
+
+    try {
+      await api.put(`drivers/${driverData.id}`, payload);
+
+      message.success('Motorista atualizado com sucesso!');
+
+      runInAction(() => {
+        this.data = this.data.map(driver =>
+          driver.id === driverData.id ? driverData : driver,
+        );
+      });
+    } catch {
+      message.error('Erro ao atualizar motorista. Por favor, tente novamente.');
+      throw new Error('Unable to update driver');
+    } finally {
+      runInAction(() => {
+        this.isCreating = false;
       });
     }
   };
