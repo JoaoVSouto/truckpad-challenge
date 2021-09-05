@@ -25,7 +25,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "start:mock-server": "json-server --watch mock/db.json --port 3333 --delay 500",
-    "dev": "concurrently 'yarn start' 'yarn start:mock-server'"
+    "dev": "concurrently 'yarn start' 'yarn start:mock-server'",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +59,7 @@
     "@typescript-eslint/eslint-plugin": "^4.30.0",
     "@typescript-eslint/parser": "^4.30.0",
     "concurrently": "^6.2.1",
+    "cypress": "^8.3.1",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "^2.4.0",
