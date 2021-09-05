@@ -39,6 +39,70 @@ describe('drivers operations', () => {
       .and('contain.text', '24');
   });
 
+  it('updates an existing driver successfully', () => {
+    cy.get('[data-testid="update-driver-button-1"]').dblclick();
+
+    cy.get('[data-testid="driver-name-input"]').clear().type('Muita Tripa');
+
+    cy.get('[data-testid="driver-birth-date-input"]')
+      .click()
+      .clear()
+      .type('28/11/1999{enter}');
+
+    cy.get('[data-testid="driver-cpf-input"]').clear().type('23912390012');
+
+    cy.get('[data-testid="check-register-cnh-radio"]').check();
+
+    cy.get('[data-testid="driver-cnh-number-input"]')
+      .clear()
+      .type('3894789238');
+
+    cy.get('[data-testid="driver-cnh-category-input"]').type(
+      '{backspace}{backspace}A{enter}',
+    );
+
+    cy.get('[data-testid="driver-cnh-expiration-date-input"]')
+      .click()
+      .clear()
+      .type('21/11/2022{enter}');
+
+    cy.get('[data-testid="submit-driver-general-data-form-btn"]').click();
+
+    cy.get('[data-testid="driver-postal-code-input"]').clear().type('23548007');
+
+    cy.wait(500);
+
+    cy.intercept('PUT', `${API_URL}drivers/*`, { statusCode: 200 });
+
+    cy.get('[data-testid="save-driver-btn"]').click();
+
+    cy.get('.ant-message').should(
+      'contain.text',
+      'Motorista atualizado com sucesso!',
+    );
+
+    cy.get('[data-row-key]')
+      .first()
+      .should('contain.text', 'Muita Tripa')
+      .and('contain.text', 'A')
+      .and('contain.text', 'Rio de Janeiro')
+      .and('contain.text', '21');
+  });
+
+  it('deletes a driver successfully', () => {
+    cy.get('[data-testid="delete-driver-button-1"]').click();
+
+    cy.get('#confirm-delete-driver-button-1').click({ force: true });
+
+    cy.intercept('DELETE', `${API_URL}drivers/*`, { statusCode: 204 });
+    cy.intercept('GET', `${API_URL}drivers?_page=1*`, {
+      body: drivers.slice(1, 6),
+      headers: { 'x-total-count': '5' },
+    });
+
+    cy.get('[data-row-key="1"]').should('not.exist');
+  });
+
   it('creates a new driver successfully', () => {
     cy.get('.ant-pagination-item-2').click();
 
@@ -125,69 +189,5 @@ describe('drivers operations', () => {
       .and('contain.text', 'AB')
       .and('contain.text', 'Rio de Janeiro')
       .and('contain.text', '21');
-  });
-
-  it('updates an existing driver successfully', () => {
-    cy.get('[data-testid="update-driver-button-1"]').dblclick();
-
-    cy.get('[data-testid="driver-name-input"]').clear().type('Muita Tripa');
-
-    cy.get('[data-testid="driver-birth-date-input"]')
-      .click()
-      .clear()
-      .type('28/11/1999{enter}');
-
-    cy.get('[data-testid="driver-cpf-input"]').clear().type('23912390012');
-
-    cy.get('[data-testid="check-register-cnh-radio"]').check();
-
-    cy.get('[data-testid="driver-cnh-number-input"]')
-      .clear()
-      .type('3894789238');
-
-    cy.get('[data-testid="driver-cnh-category-input"]').type(
-      '{backspace}{backspace}A{enter}',
-    );
-
-    cy.get('[data-testid="driver-cnh-expiration-date-input"]')
-      .click()
-      .clear()
-      .type('21/11/2022{enter}');
-
-    cy.get('[data-testid="submit-driver-general-data-form-btn"]').click();
-
-    cy.get('[data-testid="driver-postal-code-input"]').clear().type('23548007');
-
-    cy.wait(500);
-
-    cy.intercept('PUT', `${API_URL}drivers/*`, { statusCode: 200 });
-
-    cy.get('[data-testid="save-driver-btn"]').click();
-
-    cy.get('.ant-message').should(
-      'contain.text',
-      'Motorista atualizado com sucesso!',
-    );
-
-    cy.get('[data-row-key]')
-      .first()
-      .should('contain.text', 'Muita Tripa')
-      .and('contain.text', 'A')
-      .and('contain.text', 'Rio de Janeiro')
-      .and('contain.text', '21');
-  });
-
-  it('deletes a driver successfully', () => {
-    cy.get('[data-testid="delete-driver-button-1"]').click();
-
-    cy.get('#confirm-delete-driver-button-1').click({ force: true });
-
-    cy.intercept('DELETE', `${API_URL}drivers/*`, { statusCode: 204 });
-    cy.intercept('GET', `${API_URL}drivers?_page=1*`, {
-      body: drivers.slice(1, 6),
-      headers: { 'x-total-count': '5' },
-    });
-
-    cy.get('[data-row-key="1"]').should('not.exist');
   });
 });
