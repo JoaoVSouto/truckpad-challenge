@@ -23,10 +23,10 @@ describe('drivers operations', () => {
 
     cy.get('[data-row-key]')
       .eq(1)
-      .should('contain.text', 'Fulano')
+      .should('contain.text', 'Alírio Sampaio')
       .and('contain.text', '-')
-      .and('contain.text', 'Minas Gerais')
-      .and('contain.text', 'Patos de Minas')
-      .and('contain.text', '44');
+      .and('contain.text', 'Rio Grande do Norte')
+      .and('contain.text', 'Mossoró')
+      .and('contain.text', '24');
   });
 });
