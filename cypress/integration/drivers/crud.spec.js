@@ -126,4 +126,18 @@ describe('drivers operations', () => {
       .and('contain.text', 'Rio de Janeiro')
       .and('contain.text', '21');
   });
+
+  it('deletes a driver successfully', () => {
+    cy.get('[data-testid="delete-driver-button-1"]').click();
+
+    cy.get('#confirm-delete-driver-button-1').click({ force: true });
+
+    cy.intercept('DELETE', `${API_URL}drivers/*`, { statusCode: 204 });
+    cy.intercept('GET', `${API_URL}drivers?_page=1*`, {
+      body: drivers.slice(1, 6),
+      headers: { 'x-total-count': '5' },
+    });
+
+    cy.get('[data-row-key="1"]').should('not.exist');
+  });
 });

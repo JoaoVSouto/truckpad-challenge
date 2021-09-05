@@ -99,9 +99,13 @@ export const Home = observer<HomeProps>(({ driver }) => {
             cancelText="Cancelar"
             placement="right"
             onConfirm={() => driver.deleteDriver(record.id)}
+            okButtonProps={{
+              id: `confirm-delete-driver-button-${record.id}`,
+            }}
           >
             <Tooltip title="Remover">
               <Button
+                data-testid={`delete-driver-button-${record.id}`}
                 type="primary"
                 shape="circle"
                 icon={<DeleteOutlined />}
