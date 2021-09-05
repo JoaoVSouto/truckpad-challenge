@@ -27,9 +27,11 @@ type DriverAddressFormProps = {
   onSuccessfulSubmit: (payload: DriverAddressData) => void;
 };
 
+type StatesInitials = keyof typeof BRAZILIAN_STATES;
+
 type FormData = {
   postalCode: string;
-  state: string;
+  state: StatesInitials;
   city: string;
   streetName: string;
   neighborhood: string;
@@ -40,8 +42,6 @@ type FormData = {
 type IBGECityResponse = {
   nome: string;
 };
-
-type StatesInitials = keyof typeof BRAZILIAN_STATES;
 
 type ViaCepResponse = {
   bairro: string;
@@ -70,21 +70,6 @@ export function DriverAddressForm({
   const [isFetchingCities, setIsFetchingCities] = React.useState(false);
   const [isFetchingAddress, setIsFetchingAddress] = React.useState(false);
 
-  function handleFormSubmit(values: FormData) {
-    const payload = {
-      postalCode: values.postalCode,
-      name: local,
-      state: values.state,
-      city: values.city,
-      streetName: values.streetName,
-      neighborhood: values.neighborhood,
-      streetNumber: Number(values.streetNumber) || undefined,
-      complement: values.complement || undefined,
-    };
-
-    onSuccessfulSubmit(payload);
-  }
-
   async function fetchStateCities(stateInitials: string) {
     setIsFetchingCities(true);
 
@@ -97,6 +82,33 @@ export function DriverAddressForm({
     } finally {
       setIsFetchingCities(false);
     }
+  }
+
+  React.useEffect(() => {
+    if (initialValues?.state) {
+      const stateInitials = Object.entries(BRAZILIAN_STATES).find(
+        ([_, name]) => name === initialValues.state,
+      )?.[0];
+
+      if (stateInitials) {
+        fetchStateCities(stateInitials);
+      }
+    }
+  }, [initialValues?.state]);
+
+  function handleFormSubmit(values: FormData) {
+    const payload = {
+      postalCode: values.postalCode,
+      name: local,
+      state: BRAZILIAN_STATES[values.state],
+      city: values.city,
+      streetName: values.streetName,
+      neighborhood: values.neighborhood,
+      streetNumber: Number(values.streetNumber) || undefined,
+      complement: values.complement || undefined,
+    };
+
+    onSuccessfulSubmit(payload);
   }
 
   function handleSelectStateChange(stateInitials: StatesInitials) {
@@ -150,7 +162,9 @@ export function DriverAddressForm({
       onFinish={handleFormSubmit}
       initialValues={{
         postalCode: initialValues?.postalCode,
-        state: initialValues?.state,
+        state: Object.entries(BRAZILIAN_STATES).find(
+          ([_, name]) => name === initialValues?.state,
+        )?.[0],
         city: initialValues?.city,
         streetName: initialValues?.streetName,
         neighborhood: initialValues?.neighborhood,
