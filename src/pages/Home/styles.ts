@@ -19,6 +19,10 @@ export const Header = styled.div`
     margin-bottom: 0.5rem;
   }
 
+  .ant-btn {
+    font-weight: 500;
+  }
+
   ${breakpoints.greaterThan('sm')`
     flex-direction: row;
     justify-content: space-between;
@@ -36,6 +40,7 @@ export const TitleContainer = styled.div`
 
   .ant-spin {
     margin: 0 1rem;
+    color: ${({ theme }) => theme.gray[800]};
   }
 
   ${breakpoints.greaterThan('md')`

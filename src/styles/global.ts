@@ -20,4 +20,23 @@ export default createGlobalStyle`
   body {
     background-color: ${({ theme }) => theme.gray[300]};
   }
+
+  .ant-pagination-item-active {
+    &:hover,
+    &:focus {
+      background-color: transparent;
+
+      a {
+        color: ${({ theme }) => theme.yellow[500]};
+      }
+    }
+
+    a {
+      color: ${({ theme }) => theme.gray[800]};
+    }
+  }
+
+  .ant-table-wrapper .ant-spin-dot-item {
+    background-color: ${({ theme }) => theme.gray[800]};
+  }
 `;
