@@ -191,6 +191,7 @@ export function DriverAddressForm({
             disabled={isFetchingAddress}
           >
             <Input
+              data-testid="driver-postal-code-input"
               suffix={
                 isFetchingAddress && <Spin indicator={<LoadingOutlined />} />
               }
@@ -296,7 +297,12 @@ export function DriverAddressForm({
         >
           Anterior
         </Button>
-        <Button htmlType="submit" type="primary" loading={isLoading}>
+        <Button
+          data-testid="save-driver-btn"
+          htmlType="submit"
+          type="primary"
+          loading={isLoading}
+        >
           Salvar
         </Button>
       </S.ButtonsContainer>

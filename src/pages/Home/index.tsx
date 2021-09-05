@@ -145,6 +145,7 @@ export const Home = observer<HomeProps>(({ driver }) => {
         </S.TitleContainer>
 
         <Button
+          data-testid="add-driver-button"
           type="primary"
           icon={<PlusOutlined />}
           onClick={handleDriverConfigModalOpen}

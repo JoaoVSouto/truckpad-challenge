@@ -85,7 +85,7 @@ export function DriverGeneralDataForm({
           label="Nome completo"
           rules={[requiredRule, { min: 3, message: 'Mínimo de 3 caracteres' }]}
         >
-          <Input />
+          <Input data-testid="driver-name-input" />
         </Form.Item>
         <Form.Item
           name="birthDate"
@@ -115,7 +115,11 @@ export function DriverGeneralDataForm({
             requiredRule,
           ]}
         >
-          <S.DatePicker placeholder="" format="DD/MM/YYYY" />
+          <S.DatePicker
+            placeholder=""
+            format="DD/MM/YYYY"
+            data-testid="driver-birth-date-input"
+          />
         </Form.Item>
       </S.Space>
 
@@ -140,12 +144,16 @@ export function DriverGeneralDataForm({
           ]}
         >
           <InputMask mask="999.999.999-99">
-            <Input />
+            <Input data-testid="driver-cpf-input" />
           </InputMask>
         </Form.Item>
         <Form.Item label="Registrar CNH?">
           <div>
-            <Radio onChange={() => setRegisterCNH(true)} checked={registerCNH}>
+            <Radio
+              data-testid="check-register-cnh-radio"
+              onChange={() => setRegisterCNH(true)}
+              checked={registerCNH}
+            >
               Sim
             </Radio>
             <Radio
@@ -173,7 +181,7 @@ export function DriverGeneralDataForm({
                 },
               ]}
             >
-              <Input maxLength={15} />
+              <Input data-testid="driver-cnh-number-input" maxLength={15} />
             </Form.Item>
           </S.Space>
 
@@ -183,7 +191,11 @@ export function DriverGeneralDataForm({
               label="Categoria"
               rules={[requiredRule]}
             >
-              <Select mode="multiple" allowClear>
+              <Select
+                mode="multiple"
+                allowClear
+                data-testid="driver-cnh-category-input"
+              >
                 <Select.Option value="A">A</Select.Option>
                 <Select.Option value="B">B</Select.Option>
                 <Select.Option value="C">C</Select.Option>
@@ -196,13 +208,22 @@ export function DriverGeneralDataForm({
               label="Validade"
               rules={[requiredRule]}
             >
-              <S.DatePicker placeholder="" format="DD/MM/YYYY" />
+              <S.DatePicker
+                placeholder=""
+                format="DD/MM/YYYY"
+                data-testid="driver-cnh-expiration-date-input"
+              />
             </Form.Item>
           </S.HalvedSpace>
         </>
       )}
 
-      <S.NextButton htmlType="submit" type="primary" icon={<RightOutlined />}>
+      <S.NextButton
+        data-testid="submit-driver-general-data-form-btn"
+        htmlType="submit"
+        type="primary"
+        icon={<RightOutlined />}
+      >
         Próximo
       </S.NextButton>
     </Form>
