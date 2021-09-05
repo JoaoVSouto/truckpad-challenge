@@ -17,7 +17,7 @@ describe('drivers operations', () => {
       headers: { 'x-total-count': '6' },
     }).as('getDriversSecondPage');
 
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
   });
 
   it('displays correct drivers', () => {
@@ -123,6 +123,56 @@ describe('drivers operations', () => {
       .eq(1)
       .should('contain.text', 'Cicrano')
       .and('contain.text', 'AB')
+      .and('contain.text', 'Rio de Janeiro')
+      .and('contain.text', '21');
+  });
+
+  it('updates an existing driver successfully', () => {
+    cy.get('[data-testid="update-driver-button-1"]').dblclick();
+
+    cy.get('[data-testid="driver-name-input"]').clear().type('Muita Tripa');
+
+    cy.get('[data-testid="driver-birth-date-input"]')
+      .click()
+      .clear()
+      .type('28/11/1999{enter}');
+
+    cy.get('[data-testid="driver-cpf-input"]').clear().type('23912390012');
+
+    cy.get('[data-testid="check-register-cnh-radio"]').check();
+
+    cy.get('[data-testid="driver-cnh-number-input"]')
+      .clear()
+      .type('3894789238');
+
+    cy.get('[data-testid="driver-cnh-category-input"]').type(
+      '{backspace}{backspace}A{enter}',
+    );
+
+    cy.get('[data-testid="driver-cnh-expiration-date-input"]')
+      .click()
+      .clear()
+      .type('21/11/2022{enter}');
+
+    cy.get('[data-testid="submit-driver-general-data-form-btn"]').click();
+
+    cy.get('[data-testid="driver-postal-code-input"]').clear().type('23548007');
+
+    cy.wait(500);
+
+    cy.intercept('PUT', `${API_URL}drivers/*`, { statusCode: 200 });
+
+    cy.get('[data-testid="save-driver-btn"]').click();
+
+    cy.get('.ant-message').should(
+      'contain.text',
+      'Motorista atualizado com sucesso!',
+    );
+
+    cy.get('[data-row-key]')
+      .first()
+      .should('contain.text', 'Muita Tripa')
+      .and('contain.text', 'A')
       .and('contain.text', 'Rio de Janeiro')
       .and('contain.text', '21');
   });

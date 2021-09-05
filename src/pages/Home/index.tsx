@@ -88,6 +88,7 @@ export const Home = observer<HomeProps>(({ driver }) => {
         <Space size="small">
           <Tooltip title="Editar">
             <Button
+              data-testid={`update-driver-button-${record.id}`}
               type="primary"
               shape="circle"
               icon={<EditOutlined />}
