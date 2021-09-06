@@ -18,6 +18,7 @@ TruckPad is a web system where you can manage and control your drivers!
 - [x] Drivers pagination
 - [x] Dynamic address and cities autofill
 - [x] End-to-end tests with Cypress
+- [x] Drivers polling for fresh data
 - [x] UX-focused improvements
   - [x] Reactive state machine
   - [x] Dangerous operations prevention
